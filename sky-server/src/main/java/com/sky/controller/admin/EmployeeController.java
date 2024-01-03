@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -94,5 +95,12 @@ public class EmployeeController {
         log.info("员工分页查询，参数：{}", employeePageQueryDTO);
         PageResult pageResult = employeeService.pageQuery(employeePageQueryDTO);
         return Result.success(pageResult);
+    }
+
+    @PostMapping("/status/{status}")
+    @ApiOperation("设置员工账号状态")
+    public Result setStatus(@PathVariable("status") Integer status, Long id) {
+        employeeService.setStatus(status, id);
+        return Result.success();
     }
 }
