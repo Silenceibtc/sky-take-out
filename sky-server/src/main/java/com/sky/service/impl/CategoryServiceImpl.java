@@ -35,12 +35,6 @@ public class CategoryServiceImpl implements CategoryService {
 
         category.setStatus(StatusConstant.DISABLE);
 
-        category.setCreateTime(LocalDateTime.now());
-        category.setUpdateTime(LocalDateTime.now());
-
-        category.setCreateUser(BaseContext.getCurrentId());
-        category.setUpdateUser(BaseContext.getCurrentId());
-
         categoryMapper.save(category);
     }
 
@@ -101,10 +95,6 @@ public class CategoryServiceImpl implements CategoryService {
 
         //属性拷贝
         BeanUtils.copyProperties(categoryDTO, category);
-
-        //设置修改时间以及修改分类的用户
-        category.setUpdateTime(LocalDateTime.now());
-        category.setUpdateUser(BaseContext.getCurrentId());
 
         categoryMapper.update(category);
     }
