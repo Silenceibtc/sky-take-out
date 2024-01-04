@@ -134,6 +134,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     public Employee selectById(Long id) {
         Employee employee = employeeMapper.selectById(id);
+        employee.setPassword("****");
         return employee;
     }
 
