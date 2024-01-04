@@ -36,9 +36,6 @@ public interface CategoryMapper {
     @Select("select * from category where type = #{type}")
     List<Category> selectByType(Integer type);
 
-    @Update("update category set status = #{status} where id = #{id}")
-    void setStatus(Integer status, Integer id);
-
     @Delete("delete from category where id = #{id}")
     void delete(Integer id);
 }

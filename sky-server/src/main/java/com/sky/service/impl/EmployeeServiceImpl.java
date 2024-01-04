@@ -138,7 +138,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee;
     }
 
-    @Override
+    /**
+     * 更新员工信息
+     * @param employeeDTO
+     */
     public void update(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
         //属性拷贝

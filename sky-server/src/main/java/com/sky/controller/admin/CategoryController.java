@@ -80,7 +80,7 @@ public class CategoryController {
      */
     @PostMapping("/status/{status}")
     @ApiOperation("设置分类状态")
-    public Result setStatus(@PathVariable("status") Integer status, Integer id) {
+    public Result setStatus(@PathVariable("status") Integer status, Long id) {
         categoryService.setStatus(status, id);
         return Result.success();
     }

@@ -76,11 +76,18 @@ public class CategoryServiceImpl implements CategoryService {
      * @param status
      * @param id
      */
-    public void setStatus(Integer status, Integer id) {
-        categoryMapper.setStatus(status, id);
+    public void setStatus(Integer status, Long id) {
+        Category category = Category.builder()
+                .status(status)
+                .id(id)
+                .build();
+        categoryMapper.update(category);
     }
 
-    @Override
+    /**
+     * 根据id删除分类
+     * @param id
+     */
     public void delete(Integer id) {
         categoryMapper.delete(id);
     }
