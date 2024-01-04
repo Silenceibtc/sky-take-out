@@ -67,8 +67,8 @@ public class CategoryController {
      * @param categoryDTO
      * @return
      */
-    @ApiOperation("修改分类")
     @PutMapping
+    @ApiOperation("修改分类")
     public Result update(@RequestBody CategoryDTO categoryDTO) {
         categoryService.update(categoryDTO);
         return Result.success();
@@ -79,8 +79,17 @@ public class CategoryController {
      * @return
      */
     @PostMapping("/status/{status}")
+    @ApiOperation("设置分类状态")
     public Result setStatus(@PathVariable("status") Integer status, Integer id) {
         categoryService.setStatus(status, id);
         return Result.success();
     }
+
+    @DeleteMapping
+    @ApiOperation("根据id删除分类")
+    public Result delete(Integer id) {
+        categoryService.delete(id);
+        return Result.success();
+    }
+
 }

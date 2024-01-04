@@ -80,6 +80,11 @@ public class CategoryServiceImpl implements CategoryService {
         categoryMapper.setStatus(status, id);
     }
 
+    @Override
+    public void delete(Integer id) {
+        categoryMapper.delete(id);
+    }
+
     /**
      * 修改分类
      * @param categoryDTO

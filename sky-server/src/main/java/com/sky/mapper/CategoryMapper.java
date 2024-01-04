@@ -2,10 +2,7 @@ package com.sky.mapper;
 
 import com.github.pagehelper.Page;
 import com.sky.entity.Category;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -41,4 +38,7 @@ public interface CategoryMapper {
 
     @Update("update category set status = #{status} where id = #{id}")
     void setStatus(Integer status, Integer id);
+
+    @Delete("delete from category where id = #{id}")
+    void delete(Integer id);
 }
