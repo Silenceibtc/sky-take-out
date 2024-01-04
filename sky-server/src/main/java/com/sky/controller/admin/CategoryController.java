@@ -73,4 +73,14 @@ public class CategoryController {
         categoryService.update(categoryDTO);
         return Result.success();
     }
+
+    /**
+     * 设置分类状态
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    public Result setStatus(@PathVariable("status") Integer status, Integer id) {
+        categoryService.setStatus(status, id);
+        return Result.success();
+    }
 }

@@ -37,4 +37,12 @@ public interface CategoryService {
      * @return
      */
     List<Category> selectByType(Integer type);
+
+    /**
+     * 设置分类状态
+     *
+     * @param status
+     * @param id
+     */
+    void setStatus(Integer status, Integer id);
 }

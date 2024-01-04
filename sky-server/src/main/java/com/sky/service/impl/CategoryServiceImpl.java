@@ -71,6 +71,16 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
+     * 设置分类状态
+     *
+     * @param status
+     * @param id
+     */
+    public void setStatus(Integer status, Integer id) {
+        categoryMapper.setStatus(status, id);
+    }
+
+    /**
      * 修改分类
      * @param categoryDTO
      */

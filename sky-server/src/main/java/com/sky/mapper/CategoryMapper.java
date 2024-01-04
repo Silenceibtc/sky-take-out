@@ -5,6 +5,7 @@ import com.sky.entity.Category;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -37,4 +38,7 @@ public interface CategoryMapper {
      */
     @Select("select * from category where type = #{type}")
     List<Category> selectByType(Integer type);
+
+    @Update("update category set status = #{status} where id = #{id}")
+    void setStatus(Integer status, Integer id);
 }
