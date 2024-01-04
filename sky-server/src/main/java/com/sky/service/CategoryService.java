@@ -2,8 +2,10 @@ package com.sky.service;
 
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
+import com.sky.entity.Category;
 import com.sky.result.PageResult;
-import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 分类管理
@@ -16,7 +18,23 @@ public interface CategoryService {
      */
     void update(CategoryDTO categoryDTO);
 
+    /**
+     * 新增分类
+     * @param categoryDTO
+     */
     void save(CategoryDTO categoryDTO);
 
+    /**
+     * 分页查询分类
+     * @param categoryPageQueryDTO
+     * @return
+     */
     PageResult page(CategoryPageQueryDTO categoryPageQueryDTO);
+
+    /**
+     * 根据类型查询分类
+     * @param type
+     * @return
+     */
+    List<Category> selectByType(Integer type);
 }
