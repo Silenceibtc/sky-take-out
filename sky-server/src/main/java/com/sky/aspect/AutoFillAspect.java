@@ -41,6 +41,7 @@ public class AutoFillAspect {
         Object[] args = joinPoint.getArgs();
         if (args == null || args.length == 0)
             return;
+        //约定，要填充公共字段的实体对象放在参数第一个
         Object entity = args[0];
 
         //获得公共字段

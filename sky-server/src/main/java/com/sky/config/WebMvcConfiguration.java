@@ -67,6 +67,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
      * @param registry
      */
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+        log.info("开始进行静态资源映射...");
         registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
@@ -76,6 +77,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
      * @param converters
      */
     protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        log.info("开始生成消息转换器...");
         //创建一个消息转换器对象
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
 
