@@ -7,8 +7,14 @@
         VALUES (#{name}, #{categoryId}, #{price}, #{image}, #{description}, #{status}, #{createTime}, #{updateTime},
                 #{createUser}, #{updateUser})
     </insert>
+    <delete id="batchDelete">
+        delete from dish where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
     <select id="page" resultType="com.sky.vo.DishVO">
-        SELECT d.*, c.`name` AS category_name  FROM dish d LEFT JOIN category c ON d.category_id = c.id
+        SELECT d.*, c.`name` AS category_name FROM dish d LEFT JOIN category c ON d.category_id = c.id
         <where>
             <if test="name != null and name != ''">
                 and d.name like concat('%', #{name}, '%')
@@ -21,5 +27,11 @@
             </if>
         </where>
         order by create_time desc
+    </select>
+    <select id="selectByIds" resultType="com.sky.entity.Dish">
+        select * from dish where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
     </select>
 </mapper>
