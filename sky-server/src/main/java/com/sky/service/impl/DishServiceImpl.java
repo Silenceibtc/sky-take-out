@@ -146,4 +146,14 @@ public class DishServiceImpl implements DishService {
                 .build();
         dishMapper.update(dish);
     }
+
+    /**
+     * 根据分类id查询菜品
+     * @param categoryId
+     * @return
+     */
+    public List<Dish> selectByCategoryId(Long categoryId) {
+        List<Dish> dishes = dishMapper.selctByCategoryId(categoryId);
+        return dishes;
+    }
 }
