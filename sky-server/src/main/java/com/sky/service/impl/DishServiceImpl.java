@@ -133,4 +133,17 @@ public class DishServiceImpl implements DishService {
             dishFlavorMapper.save(flavors);
         }
     }
+
+    /**
+     * 设置菜品状态
+     * @param status
+     * @param id
+     */
+    public void setStatus(Integer status, Long id) {
+        Dish dish = Dish.builder()
+                .status(status)
+                .id(id)
+                .build();
+        dishMapper.update(dish);
+    }
 }
