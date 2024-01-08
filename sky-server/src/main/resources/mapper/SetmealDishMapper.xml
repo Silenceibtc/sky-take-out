@@ -5,8 +5,8 @@
         insert into setmeal_dish (setmeal_id, dish_id, name, price, copies)
         VALUES
         <foreach collection="setmealDishes" item="setmealDish" separator=",">
-            (setmeal_id = #{setmealDish.setmealId}, dish_id = #{setmealDish.dishId}, name = #{setmealDish.name}, price =
-            #{setmealDish.price}, copies = #{setmealDish.copies})
+            (#{setmealDish.setmealId}, #{setmealDish.dishId}, #{setmealDish.name},#{setmealDish.price},
+            #{setmealDish.copies})
         </foreach>
     </insert>
     <select id="selectCountByDishId" resultType="java.lang.Integer">
