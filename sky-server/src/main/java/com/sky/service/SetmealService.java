@@ -20,5 +20,16 @@ public interface SetmealService {
      */
     PageResult page(SetmealPageQueryDTO setmealPageQueryDTO);
 
+    /**
+     * 根据id查询套餐及其关联菜品信息
+     * @param id
+     * @return
+     */
     SetmealVO selectById(Long id);
+
+    /**
+     * 修改套餐
+     * @param setmealDTO
+     */
+    void update(SetmealDTO setmealDTO);
 }
