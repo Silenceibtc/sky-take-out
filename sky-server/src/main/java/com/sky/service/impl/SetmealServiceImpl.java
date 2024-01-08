@@ -117,4 +117,17 @@ public class SetmealServiceImpl implements SetmealService {
                 .build();
         setmealMapper.update(setmeal);
     }
+
+    /**
+     * 批量删除套餐
+     * @param ids
+     */
+    public void batchDelete(List<Long> ids) {
+        if (ids != null && !ids.isEmpty()){
+            //删除套餐基本信息
+            setmealMapper.delete(ids);
+            //删除套餐菜品的关联信息
+            setmealDishMapper.delete(ids);
+        }
+    }
 }

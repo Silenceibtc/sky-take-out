@@ -9,10 +9,18 @@
             #{setmealDish.copies})
         </foreach>
     </insert>
+
     <select id="selectCountByDishId" resultType="java.lang.Integer">
         select count(*) from setmeal_dish where dish_id in
         <foreach collection="ids" item="id" separator="," open="(" close=")">
             #{id}
         </foreach>
     </select>
+
+    <delete id="delete">
+        delete from setmeal_dish where setmeal_dish.setmeal_id in
+        <foreach collection="setmealIds" item="setmealId" separator="," open="(" close=")">
+            #{setmealId}
+        </foreach>
+    </delete>
 </mapper>
