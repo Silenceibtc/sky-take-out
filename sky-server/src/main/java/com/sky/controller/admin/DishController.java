@@ -90,4 +90,5 @@ public class DishController {
         dishService.setStatus(status, id);
         return Result.success();
     }
+
 }
