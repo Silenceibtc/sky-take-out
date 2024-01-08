@@ -104,4 +104,17 @@ public class SetmealServiceImpl implements SetmealService {
             setmealDishMapper.save(setmealDishes);
         }
     }
+
+    /**
+     * 设置套餐状态
+     * @param status
+     * @param id
+     */
+    public void setStatus(Integer status, Long id) {
+        Setmeal setmeal = Setmeal.builder()
+                .status(status)
+                .id(id)
+                .build();
+        setmealMapper.update(setmeal);
+    }
 }
