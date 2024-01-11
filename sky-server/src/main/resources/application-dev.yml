@@ -12,3 +12,9 @@ sky:
     bucket-name: sky-take-out-aliyunoss
     access-key-id: LTAI5tNqeP2aKdjnLxMF3YE6
     access-key-secret: jOYa0YjMAzz5cF08JilbYWeTCFmsjm
+
+  redis:
+    host: localhost
+    port: 6379
+    password: Redis.43382
+    database: 0
