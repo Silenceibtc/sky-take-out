@@ -16,5 +16,5 @@ sky:
   redis:
     host: localhost
     port: 6379
-    password: Redis.43382
+    requirepass: Redis.43382
     database: 0
