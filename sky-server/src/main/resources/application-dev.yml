@@ -18,3 +18,7 @@ sky:
     port: 6379
     requirepass: Redis.43382
     database: 0
+
+  wechat:
+    appid: wx8d5c7cc6a2b1d70b
+    secret: 6e5edb41ff9a6d5037e37aff19c18346
