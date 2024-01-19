@@ -17,6 +17,7 @@ import com.sky.service.DishService;
 import com.sky.vo.DishVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -104,12 +105,13 @@ public class DishServiceImpl implements DishService {
      * @return
      */
     public DishVO selectById(Long id) {
+        DishVO dishVO = new DishVO();
         //根据id查询菜品
-        DishVO dishVO = dishMapper.selectById(id);
+        Dish dish = dishMapper.selectById(id);
+        BeanUtils.copyProperties(dish, dishVO);
         //根据id查询口味
         List<DishFlavor> flavors = dishFlavorMapper.selectByDishId(id);
         dishVO.setFlavors(flavors);
-
         return dishVO;
     }
 

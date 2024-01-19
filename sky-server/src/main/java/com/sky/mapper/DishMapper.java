@@ -25,7 +25,7 @@ public interface DishMapper {
     List<Dish> selectByIds(List<Long> ids);
 
     @Select("select * from dish where id = #{dishId}")
-    DishVO selectById(Long dishId);
+    Dish selectById(Long dishId);
 
     @AutoFill(OperationType.UPDATE)
     void update(Dish dish);
