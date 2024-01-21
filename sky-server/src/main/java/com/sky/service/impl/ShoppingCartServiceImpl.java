@@ -30,6 +30,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     /**
      * 添加购物车
+     *
      * @param shoppingCartDTO
      */
     public void add(ShoppingCartDTO shoppingCartDTO) {
@@ -65,5 +66,19 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         shoppingCart.setNumber(1);
         shoppingCart.setCreateTime(LocalDateTime.now());
         shoppingCartMapper.insert(shoppingCart);
+    }
+
+    /**
+     * 查看购物车
+     *
+     * @return
+     */
+    public List<ShoppingCart> list() {
+        Long userId = BaseContext.getCurrentId();
+        ShoppingCart shoppingCart = ShoppingCart.builder()
+                .userId(userId)
+                .build();
+        List<ShoppingCart> shoppingCarts = shoppingCartMapper.list(shoppingCart);
+        return shoppingCarts;
     }
 }
