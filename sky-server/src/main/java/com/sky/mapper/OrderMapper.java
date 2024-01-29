@@ -3,7 +3,6 @@ package com.sky.mapper;
 import com.github.pagehelper.Page;
 import com.sky.dto.OrdersPageQueryDTO;
 import com.sky.entity.Orders;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -23,7 +22,7 @@ public interface OrderMapper {
     Orders getByNumber(String orderNumber);
 
     /**
-     * 修改订单信息
+     * 更新订单信息
      * @param orders
      */
     void update(Orders orders);
@@ -34,4 +33,7 @@ public interface OrderMapper {
      * @return
      */
     Page<Orders> page(OrdersPageQueryDTO ordersPageQueryDTO);
+
+    @Select("select count(*) from orders where status = #{status}")
+    Integer statisticsByStatus(Integer status);
 }
