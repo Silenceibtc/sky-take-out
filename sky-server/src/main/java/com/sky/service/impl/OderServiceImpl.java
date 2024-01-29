@@ -189,6 +189,17 @@ public class OderServiceImpl implements OrderService {
         return orderStatisticsVO;
     }
 
+    /**
+     * 完成订单
+     * @param id
+     */
+    public void complete(Long id) {
+        Orders order = new Orders();
+        order.setId(id);
+        order.setStatus(Orders.COMPLETED);
+        orderMapper.update(order);
+    }
+
 //    /**
 //     * 支付成功，修改订单状态
 //     *

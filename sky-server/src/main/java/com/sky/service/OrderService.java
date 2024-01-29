@@ -37,6 +37,12 @@ public interface OrderService {
      * @return
      */
     OrderStatisticsVO statistics();
+
+    /**
+     * 完成订单
+     * @param id
+     */
+    void complete(Long id);
 //
 //    /**
 //     * 支付成功，修改订单状态
