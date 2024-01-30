@@ -76,6 +76,19 @@ public interface OrderService {
      * @return
      */
     PageResult page(int page, int pageSize, Integer status);
+
+    /**
+     * 用户取消订单
+     *
+     * @return
+     */
+    void userCancelById(Long id);
+
+    /**
+     * 再来一单
+     * @param id
+     */
+    void repitition(Long id);
 //
 //    /**
 //     * 支付成功，修改订单状态
