@@ -5,10 +5,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
-import com.sky.dto.OrdersCancelDTO;
-import com.sky.dto.OrdersPageQueryDTO;
-import com.sky.dto.OrdersPaymentDTO;
-import com.sky.dto.OrdersSubmitDTO;
+import com.sky.dto.*;
 import com.sky.entity.*;
 import com.sky.exception.AddressBookBusinessException;
 import com.sky.exception.OrderBusinessException;
@@ -164,11 +161,14 @@ public class OderServiceImpl implements OrderService {
      * @param ordersCancelDTO
      */
     public void cancel(OrdersCancelDTO ordersCancelDTO) {
-        Orders order = new Orders();
-        BeanUtils.copyProperties(ordersCancelDTO, order);
-        order.setStatus(Orders.CANCELLED);
-        order.setCancelTime(LocalDateTime.now());
-        orderMapper.update(order);
+        Orders order = orderMapper.selectById(ordersCancelDTO.getId());
+        //订单已支付，退款，此处为模拟
+        if (order != null && order.getPayStatus() == Orders.PAID) {
+            order.setPayStatus(Orders.REFUND);
+            order.setStatus(Orders.CANCELLED);
+            order.setCancelTime(LocalDateTime.now());
+            orderMapper.update(order);
+        }
     }
 
     /**
@@ -198,6 +198,21 @@ public class OderServiceImpl implements OrderService {
         order.setId(id);
         order.setStatus(Orders.COMPLETED);
         orderMapper.update(order);
+    }
+
+    /**
+     * 拒绝订单
+     * @param ordersRejectionDTO
+     */
+    public void reject(OrdersRejectionDTO ordersRejectionDTO) {
+        Orders order = orderMapper.selectById(ordersRejectionDTO.getId());
+        //订单已支付，退款，此处为模拟
+        if (order != null && order.getPayStatus() == Orders.PAID) {
+            order.setPayStatus(Orders.REFUND);
+            order.setStatus(Orders.CANCELLED);
+            order.setRejectionReason(ordersRejectionDTO.getRejectionReason());
+            orderMapper.update(order);
+        }
     }
 
 //    /**
