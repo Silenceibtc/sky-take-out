@@ -293,8 +293,13 @@ public class OderServiceImpl implements OrderService {
      * @param id
      * @return
      */
-    public Orders detail(Long id) {
-        return orderMapper.selectById(id);
+    public OrderVO detail(Long id) {
+        Orders orders = orderMapper.selectById(id);
+        List<OrderDetail> orderDetails = orderDetailMapper.selectByOrderId(orders.getId());
+        OrderVO orderVO = new OrderVO();
+        BeanUtils.copyProperties(orders, orderVO);
+        orderVO.setOrderDetailList(orderDetails);
+        return orderVO;
     }
 
     /**
@@ -315,7 +320,7 @@ public class OderServiceImpl implements OrderService {
     }
 
     /**
-     * 订单分页查询
+     * 用户端订单分页查询
      * @param page
      * @param pageSize
      * @param status
