@@ -215,6 +215,16 @@ public class OderServiceImpl implements OrderService {
         }
     }
 
+    /**
+     * 接受订单
+     * @param ordersConfirmDTO
+     */
+    public void confirm(OrdersConfirmDTO ordersConfirmDTO) {
+        Orders order = new Orders();
+        BeanUtils.copyProperties(ordersConfirmDTO, order);
+        orderMapper.update(order);
+    }
+
 //    /**
 //     * 支付成功，修改订单状态
 //     *

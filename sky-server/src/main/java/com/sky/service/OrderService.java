@@ -42,10 +42,16 @@ public interface OrderService {
     void complete(Long id);
 
     /**
-     *
+     * 拒绝订单
      * @param ordersRejectionDTO
      */
     void reject(OrdersRejectionDTO ordersRejectionDTO);
+
+    /**
+     * 接受订单
+     * @param ordersConfirmDTO
+     */
+    void confirm(OrdersConfirmDTO ordersConfirmDTO);
 //
 //    /**
 //     * 支付成功，修改订单状态
