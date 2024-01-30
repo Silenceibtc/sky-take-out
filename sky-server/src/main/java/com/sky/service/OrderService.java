@@ -66,6 +66,15 @@ public interface OrderService {
      * @param id
      */
     void delivery(Long id);
+
+    /**
+     * 订单分页查询
+     * @param page
+     * @param pageSize
+     * @param status
+     * @return
+     */
+    PageResult page(int page, int pageSize, Integer status);
 //
 //    /**
 //     * 支付成功，修改订单状态

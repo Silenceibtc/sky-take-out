@@ -3,6 +3,7 @@ package com.sky.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.github.xiaoymin.knife4j.core.util.CollectionUtils;
 import com.sky.constant.MessageConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.*;
@@ -17,6 +18,7 @@ import com.sky.utils.WeChatPayUtil;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.vo.OrderVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OderServiceImpl implements OrderService {
@@ -45,6 +48,7 @@ public class OderServiceImpl implements OrderService {
 
     /**
      * 用户下单
+     *
      * @param ordersSubmitDTO
      * @return
      */
@@ -62,7 +66,7 @@ public class OderServiceImpl implements OrderService {
                 .userId(userId)
                 .build();
         List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
-        if (list == null || list.isEmpty()){
+        if (list == null || list.isEmpty()) {
             throw new ShoppingCartBusinessException(MessageConstant.SHOPPING_CART_IS_NULL);
         }
 
@@ -79,7 +83,7 @@ public class OderServiceImpl implements OrderService {
         orderMapper.insert(orders);
 
         //插入订单明细数据
-        List<OrderDetail> orderDetails =  new ArrayList<>();
+        List<OrderDetail> orderDetails = new ArrayList<>();
         for (ShoppingCart cart : list) {
             OrderDetail orderDetail = new OrderDetail();
             BeanUtils.copyProperties(cart, orderDetail);
@@ -142,22 +146,60 @@ public class OderServiceImpl implements OrderService {
         orderMapper.update(orders);
     }
 
-    /**
-     * 订单分页查询
-     * @param ordersPageQueryDTO
-     * @return
-     */
     public PageResult conditionSearch(OrdersPageQueryDTO ordersPageQueryDTO) {
         PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
+
         Page<Orders> page = orderMapper.page(ordersPageQueryDTO);
 
-        long total = page.getTotal();
-        List<Orders> records = page.getResult();
-        return new PageResult(total, records);
+        // 部分订单状态，需要额外返回订单菜品信息，将Orders转化为OrderVO
+        List<OrderVO> orderVOList = getOrderVOList(page);
+
+        return new PageResult(page.getTotal(), orderVOList);
+    }
+
+    private List<OrderVO> getOrderVOList(Page<Orders> page) {
+        // 需要返回订单菜品信息，自定义OrderVO响应结果
+        List<OrderVO> orderVOList = new ArrayList<>();
+
+        List<Orders> ordersList = page.getResult();
+        if (!CollectionUtils.isEmpty(ordersList)) {
+            for (Orders orders : ordersList) {
+                // 将共同字段复制到OrderVO
+                OrderVO orderVO = new OrderVO();
+                BeanUtils.copyProperties(orders, orderVO);
+                String orderDishes = getOrderDishesStr(orders);
+
+                // 将订单菜品信息封装到orderVO中，并添加到orderVOList
+                orderVO.setOrderDishes(orderDishes);
+                orderVOList.add(orderVO);
+            }
+        }
+        return orderVOList;
+    }
+
+    /**
+     * 根据订单id获取菜品信息字符串
+     *
+     * @param orders
+     * @return
+     */
+    private String getOrderDishesStr(Orders orders) {
+        // 查询订单菜品详情信息（订单中的菜品和数量）
+        List<OrderDetail> orderDetailList = orderDetailMapper.selectByOrderId(orders.getId());
+
+        // 将每一条订单菜品信息拼接为字符串（格式：宫保鸡丁*3；）
+        List<String> orderDishList = orderDetailList.stream().map(x -> {
+            String orderDish = x.getName() + "*" + x.getNumber() + ";";
+            return orderDish;
+        }).collect(Collectors.toList());
+
+        // 将该订单对应的所有菜品信息拼接在一起
+        return String.join("", orderDishList);
     }
 
     /**
      * 取消订单
+     *
      * @param ordersCancelDTO
      */
     public void cancel(OrdersCancelDTO ordersCancelDTO) {
@@ -166,6 +208,7 @@ public class OderServiceImpl implements OrderService {
         if (order != null && order.getPayStatus() == Orders.PAID) {
             order.setPayStatus(Orders.REFUND);
             order.setStatus(Orders.CANCELLED);
+            order.setCancelReason(ordersCancelDTO.getCancelReason());
             order.setCancelTime(LocalDateTime.now());
             orderMapper.update(order);
         }
@@ -173,6 +216,7 @@ public class OderServiceImpl implements OrderService {
 
     /**
      * 统计各状态订单数量
+     *
      * @return
      */
     public OrderStatisticsVO statistics() {
@@ -191,32 +235,50 @@ public class OderServiceImpl implements OrderService {
 
     /**
      * 完成订单
+     *
      * @param id
      */
     public void complete(Long id) {
-        Orders order = new Orders();
-        order.setId(id);
-        order.setStatus(Orders.COMPLETED);
-        orderMapper.update(order);
+        // 根据id查询订单
+        Orders order = orderMapper.selectById(id);
+
+        // 校验订单是否存在，并且状态为4
+        if (order == null || !order.getStatus().equals(Orders.DELIVERY_IN_PROGRESS)) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
+        Orders orders = new Orders();
+        orders.setId(order.getId());
+        // 更新订单状态,状态转为完成
+        orders.setStatus(Orders.COMPLETED);
+        orders.setDeliveryTime(LocalDateTime.now());
+
+        orderMapper.update(orders);
     }
 
     /**
      * 拒绝订单
+     *
      * @param ordersRejectionDTO
      */
     public void reject(OrdersRejectionDTO ordersRejectionDTO) {
         Orders order = orderMapper.selectById(ordersRejectionDTO.getId());
-        //订单已支付，退款，此处为模拟
-        if (order != null && order.getPayStatus() == Orders.PAID) {
-            order.setPayStatus(Orders.REFUND);
-            order.setStatus(Orders.CANCELLED);
-            order.setRejectionReason(ordersRejectionDTO.getRejectionReason());
-            orderMapper.update(order);
+        // 订单只有存在且状态为2（待接单）才可以拒单
+        if (order == null || !order.getStatus().equals(Orders.TO_BE_CONFIRMED)) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
         }
+        //订单已支付，退款，此处为模拟
+        if (order.getPayStatus() == Orders.PAID)
+            order.setPayStatus(Orders.REFUND);
+        order.setStatus(Orders.CANCELLED);
+        order.setRejectionReason(ordersRejectionDTO.getRejectionReason());
+        order.setCancelTime(LocalDateTime.now());
+        orderMapper.update(order);
     }
 
     /**
      * 接受订单
+     *
      * @param ordersConfirmDTO
      */
     public void confirm(OrdersConfirmDTO ordersConfirmDTO) {
@@ -227,6 +289,7 @@ public class OderServiceImpl implements OrderService {
 
     /**
      * 查看订单详情
+     *
      * @param id
      * @return
      */
@@ -236,13 +299,47 @@ public class OderServiceImpl implements OrderService {
 
     /**
      * 派送订单
+     *
      * @param id
      */
     public void delivery(Long id) {
-        Orders order = new Orders();
-        order.setId(id);
+        Orders order = orderMapper.selectById(id);
+
+        // 校验订单是否存在，并且状态为3
+        if (order == null || !order.getStatus().equals(Orders.CONFIRMED)) {
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        }
+
         order.setStatus(Orders.DELIVERY_IN_PROGRESS);
         orderMapper.update(order);
+    }
+
+    /**
+     * 订单分页查询
+     * @param page
+     * @param pageSize
+     * @param status
+     * @return
+     */
+    public PageResult page(int page, int pageSize, Integer status) {
+        PageHelper.startPage(page, pageSize);
+        //分页查询
+        OrdersPageQueryDTO ordersPageQueryDTO = new OrdersPageQueryDTO();
+        ordersPageQueryDTO.setStatus(status);
+        Page<Orders> orders = orderMapper.page(ordersPageQueryDTO);
+        //将orders转为orderVO
+        List<OrderVO> orderVOList = new ArrayList<>();
+        if (orders != null && orders.getTotal() > 0) {
+            for (Orders order : orders) {
+                Long orderId = order.getId();
+                List<OrderDetail> orderDetails = orderDetailMapper.selectByOrderId(orderId);
+                OrderVO orderVO = new OrderVO();
+                BeanUtils.copyProperties(order, orderVO);
+                orderVO.setOrderDetailList(orderDetails);
+                orderVOList.add(orderVO);
+            }
+        }
+        return new PageResult(orders.getTotal(), orderVOList);
     }
 
 //    /**
