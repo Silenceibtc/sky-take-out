@@ -225,6 +225,15 @@ public class OderServiceImpl implements OrderService {
         orderMapper.update(order);
     }
 
+    /**
+     * 查看订单详情
+     * @param id
+     * @return
+     */
+    public Orders detail(Long id) {
+        return orderMapper.selectById(id);
+    }
+
 //    /**
 //     * 支付成功，修改订单状态
 //     *

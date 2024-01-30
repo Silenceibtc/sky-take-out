@@ -26,6 +26,7 @@ public class OrderController {
 
     /**
      * 订单搜索
+     *
      * @param ordersPageQueryDTO
      * @return
      */
@@ -39,6 +40,7 @@ public class OrderController {
 
     /**
      * 取消订单
+     *
      * @param ordersCancelDTO
      * @return
      */
@@ -51,6 +53,7 @@ public class OrderController {
 
     /**
      * 统计各状态订单数量
+     *
      * @return
      */
     @GetMapping("/statistics")
@@ -61,7 +64,8 @@ public class OrderController {
     }
 
     /**
-     *完成订单
+     * 完成订单
+     *
      * @param id
      * @return
      */
@@ -74,6 +78,7 @@ public class OrderController {
 
     /**
      * 拒绝订单
+     *
      * @param ordersRejectionDTO
      * @return
      */
@@ -86,6 +91,7 @@ public class OrderController {
 
     /**
      * 接受订单
+     *
      * @param ordersConfirmDTO
      * @return
      */
@@ -95,6 +101,18 @@ public class OrderController {
         ordersConfirmDTO.setStatus(Orders.CONFIRMED);
         orderService.confirm(ordersConfirmDTO);
         return Result.success();
+    }
+
+    /**
+     * 查看订单详情
+     * @param id
+     * @return
+     */
+    @GetMapping("/details/{id}")
+    @ApiOperation("查看订单详情")
+    public Result<Orders> detail(@PathVariable Long id) {
+        Orders orders = orderService.detail(id);
+        return Result.success(orders);
     }
 
 }
