@@ -234,6 +234,17 @@ public class OderServiceImpl implements OrderService {
         return orderMapper.selectById(id);
     }
 
+    /**
+     * 派送订单
+     * @param id
+     */
+    public void delivery(Long id) {
+        Orders order = new Orders();
+        order.setId(id);
+        order.setStatus(Orders.DELIVERY_IN_PROGRESS);
+        orderMapper.update(order);
+    }
+
 //    /**
 //     * 支付成功，修改订单状态
 //     *

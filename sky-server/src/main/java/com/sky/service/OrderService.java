@@ -60,6 +60,12 @@ public interface OrderService {
      * @return
      */
     Orders detail(Long id);
+
+    /**
+     * 派送订单
+     * @param id
+     */
+    void delivery(Long id);
 //
 //    /**
 //     * 支付成功，修改订单状态
