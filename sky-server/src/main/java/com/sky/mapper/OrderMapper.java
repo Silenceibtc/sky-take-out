@@ -70,4 +70,11 @@ public interface OrderMapper {
      * @return
      */
     Double turnover(Map map);
+
+    /**
+     * 订单统计
+     * @param map
+     * @return
+     */
+    Integer statisticsOrderByMap(Map<Object, Object> map);
 }
