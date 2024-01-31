@@ -147,6 +147,7 @@ public class OderServiceImpl implements OrderService {
         orderMapper.update(orders);
         //发送来单提醒
         Map<Object, Object> map = new HashMap<>();
+        //type=1为来单提醒，type=2为催单提醒
         map.put("type", 1);
         map.put("orderId", orders.getId());
         map.put("content", "订单号" + ordersDB.getNumber());
@@ -416,6 +417,22 @@ public class OderServiceImpl implements OrderService {
             }
         }
         shoppingCartMapper.batchInsert(shoppingCarts);
+    }
+
+    /**
+     * 客户催单
+     */
+    public void remind(Long id) {
+        Orders orders = orderMapper.selectById(id);
+        if (orders == null)
+            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        Map<Object, Object> map = new HashMap<>();
+        //type=1为来单提醒，type=2为催单提醒
+        map.put("type", 2);
+        map.put("orderId", id);
+        map.put("content", "订单号：" + orders.getNumber());
+        String json = JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(json);
     }
 
 //    /**

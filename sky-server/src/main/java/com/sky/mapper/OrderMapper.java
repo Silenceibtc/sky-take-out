@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Select;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface OrderMapper {
@@ -61,4 +62,12 @@ public interface OrderMapper {
      */
     @Select("select * from orders where status = #{status} and order_time < #{localDateTime}")
     List<Orders> selectByStatusAndOrderTimeLT(Integer status, LocalDateTime localDateTime);
+
+    /**
+     * 统计当日营业额
+     *
+     * @param map
+     * @return
+     */
+    Double turnover(Map map);
 }
