@@ -22,6 +22,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,9 +64,7 @@ public class OderServiceImpl implements OrderService {
         }
 
         Long userId = BaseContext.getCurrentId();
-        ShoppingCart shoppingCart = ShoppingCart.builder()
-                .userId(userId)
-                .build();
+        ShoppingCart shoppingCart = ShoppingCart.builder().userId(userId).build();
         List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
         if (list == null || list.isEmpty()) {
             throw new ShoppingCartBusinessException(MessageConstant.SHOPPING_CART_IS_NULL);
@@ -81,6 +80,7 @@ public class OderServiceImpl implements OrderService {
         orders.setUserId(userId);
         orders.setPayStatus(Orders.UN_PAID);
         orders.setStatus(Orders.PENDING_PAYMENT);
+        orders.setAddress(addressBook.getProvinceName() + addressBook.getCityName() + addressBook.getDistrictName() + addressBook.getDetail());
         orderMapper.insert(orders);
 
         //插入订单明细数据
@@ -97,12 +97,7 @@ public class OderServiceImpl implements OrderService {
         shoppingCartMapper.deleteByUserId(userId);
 
         //封装OrderSubmitVO对象
-        OrderSubmitVO orderSubmitVO = OrderSubmitVO.builder()
-                .id(orders.getId())
-                .orderAmount(orders.getAmount())
-                .orderNumber(orders.getNumber())
-                .orderTime(orders.getOrderTime())
-                .build();
+        OrderSubmitVO orderSubmitVO = OrderSubmitVO.builder().id(orders.getId()).orderAmount(orders.getAmount()).orderNumber(orders.getNumber()).orderTime(orders.getOrderTime()).build();
         return orderSubmitVO;
     }
 
@@ -137,12 +132,7 @@ public class OderServiceImpl implements OrderService {
         Orders ordersDB = orderMapper.getByNumber(ordersPaymentDTO.getOrderNumber());
 
         // 根据订单id更新订单的状态、支付方式、支付状态、结账时间
-        Orders orders = Orders.builder()
-                .id(ordersDB.getId())
-                .status(Orders.TO_BE_CONFIRMED)
-                .payStatus(Orders.PAID)
-                .checkoutTime(LocalDateTime.now())
-                .build();
+        Orders orders = Orders.builder().id(ordersDB.getId()).status(Orders.TO_BE_CONFIRMED).payStatus(Orders.PAID).checkoutTime(LocalDateTime.now()).build();
 
         orderMapper.update(orders);
         //发送来单提醒
@@ -277,8 +267,7 @@ public class OderServiceImpl implements OrderService {
             throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
         }
         //订单已支付，退款，此处为模拟
-        if (order.getPayStatus() == Orders.PAID)
-            order.setPayStatus(Orders.REFUND);
+        if (order.getPayStatus() == Orders.PAID) order.setPayStatus(Orders.REFUND);
         order.setStatus(Orders.CANCELLED);
         order.setRejectionReason(ordersRejectionDTO.getRejectionReason());
         order.setCancelTime(LocalDateTime.now());
@@ -424,8 +413,7 @@ public class OderServiceImpl implements OrderService {
      */
     public void remind(Long id) {
         Orders orders = orderMapper.selectById(id);
-        if (orders == null)
-            throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
+        if (orders == null) throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
         Map<Object, Object> map = new HashMap<>();
         //type=1为来单提醒，type=2为催单提醒
         map.put("type", 2);
