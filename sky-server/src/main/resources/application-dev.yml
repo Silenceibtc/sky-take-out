@@ -5,20 +5,20 @@ sky:
     port: 3306
     database: sky_take_out
     username: root
-    password: Mysql.86219
+    password: 
 
   alioss:
-    endpoint: oss-cn-beijing.aliyuncs.com
-    bucket-name: sky-take-out-aliyunoss
-    access-key-id: LTAI5tNqeP2aKdjnLxMF3YE6
-    access-key-secret: jOYa0YjMAzz5cF08JilbYWeTCFmsjm
+    endpoint: 
+    bucket-name: 
+    access-key-id: 
+    access-key-secret: 
 
   redis:
     host: localhost
     port: 6379
-    requirepass: Redis.43382
+    requirepass: 
     database: 0
 
   wechat:
-    appid: wx8d5c7cc6a2b1d70b
-    secret: 6e5edb41ff9a6d5037e37aff19c18346
+    appid: 
+    secret: 
